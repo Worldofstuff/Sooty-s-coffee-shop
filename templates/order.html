@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brunch Order</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fffbea;
+            color: #333;
+        }
+        .dish-button {
+            width: 100%;
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #ffd700;
+            border: none;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .dish-button:hover {
+            transform: scale(1.05);
+        }
+        .dish-image {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .form-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Brunch Order Form</h1>
+        <div id="dish-selection" class="text-center">
+            <button class="dish-button" data-dish="Avocado Toast">
+                <img src="avocado_toast.jpg" alt="Avocado Toast" class="dish-image">
+                <h2>Avocado Toast</h2>
+            </button>
+            <button class="dish-button" data-dish="Honey Banana Bowl">
+                <img src="honey_banana_bowl.jpg" alt="Honey Banana Bowl" class="dish-image">
+                <h2>Honey Banana Bowl</h2>
+            </button>
+            <button class="dish-button" data-dish="French Toast">
+                <img src="french_toast.jpg" alt="French Toast" class="dish-image">
+                <h2>French Toast</h2>
+            </button>
+        </div>
+        <div id="form-section" class="form-section">
+            <form id="orderForm">
+                <input type="hidden" id="selectedDish" name="food">
+                <label for="drink">Choose your drink:</label>
+                <select id="drink" name="drink" class="form-control mb-2" required>
+                    <option value="None">None</option>
+                    <option value="Espresso">Espresso</option>
+                    <option value="Latte">Latte</option>
+                    <option value="Cappuccino">Cappuccino</option>
+                    <option value="Americano">Americano</option>
+                    <option value="Mocha">Mocha</option>
+                    <option value="Brown Sugar Latte">Brown Sugar Latte</option>
+                    <option value="Lemonade Coffee">Lemonade Coffee</option>
+                </select>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required class="form-control mb-2">
+                <label for="note">Note:</label>
+                <textarea id="note" name="note" class="form-control mb-2"></textarea>
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.dish-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('selectedDish').value = this.getAttribute('data-dish');
+                document.getElementById('dish-selection').style.display = 'none';
+                document.getElementById('form-section').style.display = 'block';
+            });
+        });
+
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const food = document.getElementById('selectedDish').value;
+            const drink = document.getElementById('drink').value;
+            const note = document.getElementById('note').value;
+
+            fetch('/submit_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, food, drink, note })
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order submitted successfully!');
+                    document.getElementById('orderForm').reset();
+                    document.getElementById('dish-selection').style.display = 'block';
+                    document.getElementById('form-section').style.display = 'none';
+                } else {
+                    alert('Error submitting order.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

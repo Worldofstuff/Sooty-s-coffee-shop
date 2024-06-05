@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Queue</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fffbea;
+            color: #333;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: red;
+        }
+        .btn-completed {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Order Queue</h1>
+        <h2>Food and Drink Orders</h2>
+        <ul class="list-group mb-4" id="orderList">
+            {% for order in orders %}
+            <li class="list-group-item d-flex justify-content-between align-items-center" id="order-{{ loop.index0 }}">
+                <span>
+                    {{ order.name }} - {{ order.food }} <br>
+                    Drink: {{ order.drink }} <br>
+                    Note: {{ order.note }}
+                </span>
+                <button class="btn btn-sm btn-success complete-button" data-index="{{ loop.index0 }}">Complete</button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script>
+        document.querySelectorAll('.complete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = this.getAttribute('data-index');
+                fetch('/complete_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `index=${index}`
+                }).then(response => {
+                    if (response.ok) {
+                        const orderItem = document.getElementById(`order-${index}`);
+                        orderItem.querySelector('span').classList.add('completed');
+                        this.textContent = 'Completed';
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-completed');
+                        this.disabled = true;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

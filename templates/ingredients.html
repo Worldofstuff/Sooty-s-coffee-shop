@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredients List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fffbea;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Ingredients List</h1>
+        <h2>Food Ingredients</h2>
+        <ul class="list-group mb-4">
+            {% for ingredient, amount in ingredients.items() %}
+            <li class="list-group-item">
+                {{ ingredient }}: {{ amount }}
+            </li>
+            {% endfor %}
+        </ul>
+        <h2>Drink Ingredients</h2>
+        <ul class="list-group">
+            {% for ingredient, amount in drink_ingredients.items() %}
+            <li class="list-group-item">
+                {{ ingredient }}: {{ amount }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
